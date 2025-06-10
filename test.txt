@@ -1,0 +1,8 @@
+{
+  "user_id": "rounak@gmail.com",
+  "session_id": "7a321de5-7fb9-458b-a7ed-48e6c5e6186d",
+  "timestamp": "2025-06-01T13:09:57.091509",
+  "question": "What is value of PI??"
+}
+
+Now I want store the data chat data into two databases after answer is sent it will stored to the  Redis and MongoDB. I have created my own class for that I have attached implementation in the pdf

@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  redis-chat:
+    image: redis:7-alpine
+    container_name: redis-chat-history
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+    # Fix: Use proper Redis password configuration
+    command: redis-server --requirepass rounak_test --appendonly yes
+    environment:
+      - REDIS_PASSWORD=rounak_test
+    networks:
+      - chat_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "rounak_test", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: redis-web-ui
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    environment:
+      - REDIS_HOSTS=local:redis-chat:6379:0:rounak_test
+      - HTTP_USER=rounak_saha
+      - HTTP_PASSWORD=rounak_test
+    networks:
+      - chat_network
+    depends_on:
+      - redis-chat
+
+volumes:
+  redis_data:
+    driver: local
+
+networks:
+  chat_network:
+    driver: bridge
